@@ -2,6 +2,7 @@ package com.vaidedigital.pages;
 
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
@@ -52,5 +53,42 @@ class PagesApplicationTests {
     mockMvc.perform(get("/page/1"))
         .andExpect(status().isOk())
         .andExpect(content().json(jsonOf(expectedResponse)));
+  }
+
+  @Test
+  void testUpdatePageById_updatesPage() throws Exception {
+    Map<String, Object> requestBody = Map.of(
+        "url", "https://example.com",
+        "config", "{}");
+
+    Map<String, Object> expectedResponse = Map.of(
+        "id", 1,
+        "url", "https://example.com",
+        "config", "{}");
+
+    mockMvc.perform(post("/page")
+        .contentType("application/json")
+        .content(jsonOf(requestBody)))
+        .andExpect(status().isOk())
+        .andExpect(content().json(jsonOf(expectedResponse)));
+
+    Map<String, Object> updateRequestBody = Map.of(
+        "url", "https://example.com",
+        "config", "{\"title\": \"Example\"}");
+
+    Map<String, Object> expectedUpdateResponse = Map.of(
+        "id", 1,
+        "url", "https://example.com",
+        "config", "{\"title\": \"Example\"}");
+
+    mockMvc.perform(put("/page/1")
+        .contentType("application/json")
+        .content(jsonOf(updateRequestBody)))
+        .andExpect(status().isOk())
+        .andExpect(content().json(jsonOf(expectedUpdateResponse)));
+
+    mockMvc.perform(get("/page/1"))
+        .andExpect(status().isOk())
+        .andExpect(content().json(jsonOf(expectedUpdateResponse)));
   }
 }
