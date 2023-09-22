@@ -3,6 +3,7 @@ package com.vaidedigital.pages.services;
 import com.vaidedigital.pages.dtos.CreatePageDto;
 import com.vaidedigital.pages.entities.Page;
 import com.vaidedigital.pages.repositories.PageRepository;
+import java.util.Optional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -17,5 +18,9 @@ public class PageService {
   public Page addNewPage(CreatePageDto newPage) {
     Page page = new Page(newPage.url(), newPage.config());
     return pageRepository.save(page);
+  }
+
+  public Optional<Page> getPageById(Integer id) {
+    return pageRepository.findById(id);
   }
 }
