@@ -12,7 +12,7 @@ import jakarta.persistence.Table;
  * Database entity representing a web page.
  */
 @Entity
-@Table(name = "page")
+@Table(name = "pages")
 public class Page {
   @Id
   @GeneratedValue(strategy = GenerationType.AUTO)
