@@ -7,13 +7,22 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.vaidedigital.pages.components.Role;
+import com.vaidedigital.pages.entities.User;
+import com.vaidedigital.pages.repositories.UserRepository;
 import java.util.Map;
+
+import org.checkerframework.checker.units.qual.g;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.test.web.servlet.MockMvc;
+import org.springframework.test.web.servlet.MvcResult;
 
 @SpringBootTest
 @AutoConfigureMockMvc
@@ -21,12 +30,42 @@ import org.springframework.test.web.servlet.MockMvc;
 class PagesApplicationTests {
 
   @Autowired
-  private MockMvc mockMvc;
+  MockMvc mockMvc;
 
-  private ObjectMapper objectMapper = new ObjectMapper();
+  @Autowired
+  UserRepository userRepository;
 
-  private String jsonOf(Map<String, Object> map) throws Exception {
+  PasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
+
+  ObjectMapper objectMapper = new ObjectMapper();
+
+  User mockAdminUser = new User(
+      "Sarah", "sarah1@mail.com", passwordEncoder.encode("abc123"), Role.ADMIN);
+
+  User mockUser = new User(
+      "Joe", "joe1", passwordEncoder.encode("abc123"), Role.USER);
+
+  String jsonOf(Map<String, Object> map) throws Exception {
     return objectMapper.writeValueAsString(map);
+  }
+
+  String getTokenFromMockUser(String email) throws Exception {
+    String requestBody = jsonOf(Map.of(
+        "email", email,
+        "password", "abc123"));
+
+    MvcResult result = mockMvc.perform(post("/login")
+        .contentType("application/json")
+        .content(requestBody))
+        .andReturn();
+
+    return result.getResponse().getContentAsString();
+  }
+
+  @BeforeEach
+  void populateDatabase() {
+    userRepository.save(mockAdminUser);
+    userRepository.save(mockUser);
   }
 
   @Test
@@ -36,17 +75,13 @@ class PagesApplicationTests {
   @Test
   void testLoginUser_returnsToken() throws Exception {
     String requestBody = jsonOf(Map.of(
-        "username", "sarah1",
+        "email", mockAdminUser.getEmail(),
         "password", "abc123"));
-
-    String expectedResponse = jsonOf(Map.of(
-        "token", "some-nice-jwt-token"));
 
     mockMvc.perform(post("/login")
         .contentType("application/json")
         .content(requestBody))
-        .andExpect(status().isOk())
-        .andExpect(content().json(expectedResponse));
+        .andExpect(status().isOk());
   }
 
   @Test
@@ -55,7 +90,7 @@ class PagesApplicationTests {
         "url", "https://example.com",
         "config", "{}");
 
-    String token = "Bearer token-admin-token";
+    String token = getTokenFromMockUser(mockAdminUser.getEmail());
 
     Map<String, Object> expectedResponse = Map.of(
         "id", 1,
@@ -80,7 +115,7 @@ class PagesApplicationTests {
         "url", "https://example.com",
         "config", "{}");
 
-    String token = "Bearer token-user-token";
+    String token = getTokenFromMockUser(mockUser.getEmail());
 
     mockMvc.perform(post("/page")
         .header("Authorization", token)
@@ -113,8 +148,8 @@ class PagesApplicationTests {
         "url", "https://example.com",
         "config", "{}");
 
-    String adminToken = "Bearer token-admin-token";
-    String userToken = "Bearer token-user-token";
+    String adminToken = getTokenFromMockUser(mockAdminUser.getEmail());
+    String userToken = getTokenFromMockUser(mockUser.getEmail());
 
     Map<String, Object> expectedResponse = Map.of(
         "id", 1,
@@ -155,7 +190,7 @@ class PagesApplicationTests {
         "url", "https://example.com",
         "config", "{}");
 
-    String adminToken = "Bearer token-admin-token";
+    String adminToken = getTokenFromMockUser(mockAdminUser.getEmail());
 
     Map<String, Object> expectedResponse = Map.of(
         "id", 1,
