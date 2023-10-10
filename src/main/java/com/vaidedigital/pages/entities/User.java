@@ -1,5 +1,6 @@
 package com.vaidedigital.pages.entities;
 
+import com.vaidedigital.pages.components.Role;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
@@ -36,7 +37,7 @@ public class User implements UserDetails {
   private String password;
 
   @Column(nullable = false)
-  private String role;
+  private Role role;
 
   @Column(nullable = false)
   private Boolean active;
@@ -48,13 +49,24 @@ public class User implements UserDetails {
     this.name = name;
     this.email = email;
     this.password = password;
-    this.role = "USER";
+    this.role = Role.USER;
+    this.active = true;
+  }
+
+  /**
+   * Create a new user.
+   */
+  public User(String name, String email, String password, Role role) {
+    this.name = name;
+    this.email = email;
+    this.password = password;
+    this.role = role;
     this.active = true;
   }
 
   @Override
   public Collection<? extends GrantedAuthority> getAuthorities() {
-    return List.of(new SimpleGrantedAuthority(getRole()));
+    return List.of(new SimpleGrantedAuthority(getRole().toString()));
   }
 
   @Override
@@ -115,11 +127,11 @@ public class User implements UserDetails {
     this.password = password;
   }
 
-  public String getRole() {
+  public Role getRole() {
     return role;
   }
 
-  public void setRole(String role) {
+  public void setRole(Role role) {
     this.role = role;
   }
 
