@@ -4,6 +4,6 @@ package com.vaidedigital.pages.components;
  * Roles list.
  */
 public enum Role {
-  ADMIN,
-  USER
+  ROLE_ADMIN,
+  ROLE_USER
 }

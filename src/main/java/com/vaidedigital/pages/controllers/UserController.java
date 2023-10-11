@@ -6,9 +6,13 @@ import com.vaidedigital.pages.dtos.LoginDto;
 import com.vaidedigital.pages.entities.User;
 import com.vaidedigital.pages.services.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
+import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
@@ -48,8 +52,21 @@ public class UserController {
    * @param user the user to register
    * @return the registered user
    */
+  @PreAuthorize("hasRole('ADMIN')")
   @PostMapping("/register")
   public User register(@RequestBody CreateUserDto user) {
     return userService.register(user);
+  }
+
+  /**
+   * Get a user by its email.
+   *
+   * @param email the email of the user
+   * @return the user
+   */
+  @PreAuthorize("hasRole('ADMIN')")
+  @GetMapping("/user/{email}")
+  public UserDetails getUser(@PathVariable String email) {
+    return userService.loadUserByUsername(email);
   }
 }

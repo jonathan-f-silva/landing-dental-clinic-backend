@@ -7,6 +7,7 @@ import com.vaidedigital.pages.services.PageService;
 import java.util.Optional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -29,6 +30,7 @@ public class PageController {
   /**
    * Create a new page.
    */
+  @PreAuthorize("hasRole('ROLE_ADMIN')")
   @PostMapping
   public Page addNewPage(@RequestBody CreatePageDto newPage) {
     return pageService.addNewPage(newPage);

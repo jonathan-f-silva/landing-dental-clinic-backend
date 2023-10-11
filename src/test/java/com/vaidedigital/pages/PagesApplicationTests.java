@@ -11,8 +11,6 @@ import com.vaidedigital.pages.components.Role;
 import com.vaidedigital.pages.entities.User;
 import com.vaidedigital.pages.repositories.UserRepository;
 import java.util.Map;
-
-import org.checkerframework.checker.units.qual.g;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -40,10 +38,10 @@ class PagesApplicationTests {
   ObjectMapper objectMapper = new ObjectMapper();
 
   User mockAdminUser = new User(
-      "Sarah", "sarah1@mail.com", passwordEncoder.encode("abc123"), Role.ADMIN);
+      "Sarah", "sarah1@mail.com", passwordEncoder.encode("abc123"), Role.ROLE_ADMIN);
 
   User mockUser = new User(
-      "Joe", "joe1", passwordEncoder.encode("abc123"), Role.USER);
+      "Joe", "joe1", passwordEncoder.encode("abc123"), Role.ROLE_USER);
 
   String jsonOf(Map<String, Object> map) throws Exception {
     return objectMapper.writeValueAsString(map);
