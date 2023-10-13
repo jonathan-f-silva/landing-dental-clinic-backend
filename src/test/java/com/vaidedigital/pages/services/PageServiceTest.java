@@ -1,5 +1,8 @@
 package com.vaidedigital.pages.services;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+
 import com.vaidedigital.pages.dtos.CreatePageDto;
 import com.vaidedigital.pages.entities.Page;
 import org.junit.jupiter.api.Test;
@@ -7,9 +10,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.annotation.DirtiesContext;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertNotNull;
-
+/**
+ * Test class for {@link PageService}.
+ */
 @SpringBootTest
 public class PageServiceTest {
   @Autowired
