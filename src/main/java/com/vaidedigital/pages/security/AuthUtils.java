@@ -1,4 +1,4 @@
-package com.vaidedigital.pages.components;
+package com.vaidedigital.pages.security;
 
 import com.nimbusds.jose.jwk.JWK;
 import com.nimbusds.jose.jwk.JWKSet;

@@ -1,6 +1,6 @@
 package com.vaidedigital.pages.entities;
 
-import com.vaidedigital.pages.components.Role;
+import com.vaidedigital.pages.security.Role;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;

@@ -1,4 +1,4 @@
-package com.vaidedigital.pages.components;
+package com.vaidedigital.pages.security;
 
 /**
  * Roles list.

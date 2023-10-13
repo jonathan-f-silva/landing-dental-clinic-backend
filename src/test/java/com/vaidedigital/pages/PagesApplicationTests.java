@@ -7,9 +7,9 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.vaidedigital.pages.components.Role;
 import com.vaidedigital.pages.entities.User;
 import com.vaidedigital.pages.repositories.UserRepository;
+import com.vaidedigital.pages.security.Role;
 import java.util.Map;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;

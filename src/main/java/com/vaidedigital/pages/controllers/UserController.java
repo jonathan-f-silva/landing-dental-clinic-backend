@@ -1,9 +1,9 @@
 package com.vaidedigital.pages.controllers;
 
-import com.vaidedigital.pages.components.AuthUtils;
 import com.vaidedigital.pages.dtos.CreateUserDto;
 import com.vaidedigital.pages.dtos.LoginDto;
 import com.vaidedigital.pages.entities.User;
+import com.vaidedigital.pages.security.AuthUtils;
 import com.vaidedigital.pages.services.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.prepost.PreAuthorize;

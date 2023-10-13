@@ -1,4 +1,4 @@
-package com.vaidedigital.pages.components;
+package com.vaidedigital.pages.security;
 
 import com.vaidedigital.pages.services.UserService;
 import jakarta.servlet.FilterChain;
