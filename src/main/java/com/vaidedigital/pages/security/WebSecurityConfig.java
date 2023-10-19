@@ -1,6 +1,7 @@
 package com.vaidedigital.pages.security;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpMethod;
@@ -22,6 +23,8 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 @EnableWebSecurity
 @EnableMethodSecurity
 public class WebSecurityConfig {
+  @Value("${spring.profiles.active:}")
+  private String activeProfiles;
 
   @Autowired
   JwtTokenFilter jwtTokenFilter;
@@ -37,6 +40,14 @@ public class WebSecurityConfig {
    */
   @Bean
   SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
+    if (activeProfiles.contains("dev")) {
+      http
+          .httpBasic(httpBasic -> httpBasic.init(http))
+          .authorizeHttpRequests(auth -> auth
+              .requestMatchers(HttpMethod.GET,
+                  "/swagger-ui/**", "/v3/api-docs/**")
+              .permitAll());
+    }
     http
         .csrf(csrf -> csrf.disable())
         .sessionManagement(session -> session
