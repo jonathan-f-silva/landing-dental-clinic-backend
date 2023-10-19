@@ -1,0 +1,98 @@
+@root = http://localhost:8080
+
+### Get user info with JWT
+GET {{root}}/user/user@jonat.inc
+Authorization: Bearer eyJhbGciOiJSUzI1NiJ9.eyJpc3MiOiJ2YWlkZWRpZ2l0YWwtcGFnZXMiLCJzdWIiOiJqb25hdEBqb25hdC5pbmMiLCJleHAiOjE2OTc2Njg3NDYsImlhdCI6MTY5NzYzMjc0Niwic2NvcGUiOiJST0xFX0FETUlOIn0.wBOkZRzj8hXSTAxUm3NPj5EHN6BMLy7bOczBrOjw67q8v42JAzZdpkRRmLA7eKGhh0E9SZoNevcrJTRsGC53FzJSgmAc3i1zG3Fymg-6WIrz3D1ozxw5x6PPBRh2QMy4S2lmqhvfpV8NYVlLiANGsCsT8vFImYSPDgj68HZx4uNF8IdCM9gThAPqWSVaudnynYkf4l1rqmpbZ8xnbXEPfaCwsapd0WgRoJ24N5wl8SCTfOcFR7_6hLwNJRzeggVGG99LcMLqAlrCnW-Zlhx3CdCRIx2lNQH8kh0FFQV0sb4KzbxoY6iVmIAIlbpcZNHEQNl4rmBzvfbOkczorU_koQ
+
+### Get user info with Basic Auth
+GET {{root}}/user/user@jonat.inc
+Authorization: Basic jonat@jonat.inc:123456
+
+### Login admin with JWT
+POST {{root}}/login
+Content-Type: application/json
+
+{
+  "email": "jonat@jonat.inc",
+  "password": "123456"
+}
+
+### Login user with JWT
+POST {{root}}/login
+Content-Type: application/json
+
+{
+  "email": "user@jonat.inc",
+  "password": "123456q"
+}
+
+### Register user with Basic Auth (user)
+POST {{root}}/register
+Authorization: Basic user@jonat.inc:123456q
+Content-Type: application/json
+
+{
+  "name": "Ola Ola",
+  "email": "ola324@oi.com.yay",
+  "password": "123456q"
+}
+
+### Register user with Basic Auth (admin)
+POST {{root}}/register
+Authorization: Basic jonat@jonat.inc:123456
+Content-Type: application/json
+
+{
+  "name": "Ola Ola",
+  "email": "ola3@oi.com.yay",
+  "password": "123456q"
+}
+
+
+### Get page info
+GET {{root}}/page/1
+
+### Create page with wrong format
+POST {{root}}/page
+Content-Type: application/json
+Authorization: Basic jonat@jonat.inc:123456
+
+{
+  "duh": "Page 1",
+  "content": "Content 1"
+}
+
+### Create page with correct format
+POST {{root}}/page
+Content-Type: application/json
+Authorization: Bearer eyJhbGciOiJSUzI1NiJ9.eyJpc3MiOiJ2YWlkZWRpZ2l0YWwtcGFnZXMiLCJzdWIiOiJqb25hdEBqb25hdC5pbmMiLCJleHAiOjE2OTc2Njg3NDYsImlhdCI6MTY5NzYzMjc0Niwic2NvcGUiOiJST0xFX0FETUlOIn0.wBOkZRzj8hXSTAxUm3NPj5EHN6BMLy7bOczBrOjw67q8v42JAzZdpkRRmLA7eKGhh0E9SZoNevcrJTRsGC53FzJSgmAc3i1zG3Fymg-6WIrz3D1ozxw5x6PPBRh2QMy4S2lmqhvfpV8NYVlLiANGsCsT8vFImYSPDgj68HZx4uNF8IdCM9gThAPqWSVaudnynYkf4l1rqmpbZ8xnbXEPfaCwsapd0WgRoJ24N5wl8SCTfOcFR7_6hLwNJRzeggVGG99LcMLqAlrCnW-Zlhx3CdCRIx2lNQH8kh0FFQV0sb4KzbxoY6iVmIAIlbpcZNHEQNl4rmBzvfbOkczorU_koQ
+# Authorization: Basic jonat@jonat.inc:123456
+
+{
+  "url": "www.oi.comw.yay",
+  "config": "{\"title\":\"Page 1\",\"content\":\"Content 1\"}"
+}
+
+### Update page
+PUT {{root}}/page/144
+Content-Type: application/json
+Authorization: Basic jonat@jonat.inc:123456
+
+{
+  "url": "www.oi.coma.yay",
+  "config": "{}"
+}
+
+### Update page status
+PATCH {{root}}/page/1/status
+# Authorization: Basic jonat@jonat.inc:123456
+Authorization: Basic user@jonat.inc:123456q
+Content-Type: application/json
+
+{
+  "status": "published"
+}
+
+### Swagger UI
+GET {{root}}/swagger-ui/index.html
+# Authorization: Basic user@jonat.inc:123456q
