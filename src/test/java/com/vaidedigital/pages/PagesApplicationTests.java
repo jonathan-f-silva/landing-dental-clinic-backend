@@ -83,6 +83,107 @@ class PagesApplicationTests {
   }
 
   @Test
+  void testLoginUser_wrongUser_gives401Error() throws Exception {
+    String requestBody = jsonOf(Map.of(
+        "email", "unknown@user.com",
+        "password", "123456"));
+
+    mockMvc.perform(post("/login")
+        .contentType("application/json")
+        .content(requestBody))
+        .andExpect(status().isUnauthorized());
+  }
+
+  @Test
+  void testLoginUser_wrongPassword_gives401Error() throws Exception {
+    String requestBody = jsonOf(Map.of(
+        "email", mockAdminUser.getEmail(),
+        "password", "123456"));
+
+    mockMvc.perform(post("/login")
+        .contentType("application/json")
+        .content(requestBody))
+        .andExpect(status().isUnauthorized());
+  }
+
+  @Test
+  void testRegisterUser_withoutToken_gives401Error() throws Exception {
+    String requestBody = jsonOf(Map.of(
+        "name", "New User",
+        "email", "new.user@users.com"));
+
+    mockMvc.perform(post("/register")
+        .contentType("application/json")
+        .content(requestBody))
+        .andExpect(status().isUnauthorized());
+  }
+
+  @Test
+  void testRegisterUser_withUserToken_gives403Error() throws Exception {
+    String token = getTokenFromMockUser(mockUser.getEmail());
+
+    String requestBody = jsonOf(Map.of(
+        "name", "New User",
+        "email", "new.user@users.com",
+        "password", "abc123"));
+
+    mockMvc.perform(post("/register")
+        .header("Authorization", token)
+        .contentType("application/json")
+        .content(requestBody))
+        .andExpect(status().isForbidden());
+  }
+
+  @Test
+  void testRegisterUser_withAdminToken_createsUser() throws Exception {
+    String token = getTokenFromMockUser(mockAdminUser.getEmail());
+
+    String requestBody = jsonOf(Map.of(
+        "name", "New User",
+        "email", "new.user@users.com",
+        "password", "abc123"));
+
+    mockMvc.perform(post("/register")
+        .header("Authorization", token)
+        .contentType("application/json")
+        .content(requestBody))
+        .andExpect(status().isCreated());
+  }
+
+  @Test
+  void testAddNewPage_withoutToken_gives401Error() throws Exception {
+    Map<String, Object> requestBody = Map.of(
+        "url", "https://example.com",
+        "config", "{}");
+
+    mockMvc.perform(post("/page")
+        .contentType("application/json")
+        .content(jsonOf(requestBody)))
+        .andExpect(status().isUnauthorized());
+
+    mockMvc.perform(get("/page/1"))
+        .andExpect(status().isNotFound());
+  }
+
+  @Test
+  void testAddNewPage_withUserToken_gives403Error() throws Exception {
+    Map<String, Object> requestBody = Map.of(
+        "url", "https://example.com",
+        "config", "{}");
+
+    String token = getTokenFromMockUser(mockUser.getEmail());
+
+    mockMvc.perform(post("/page")
+        .header("Authorization", token)
+        .contentType("application/json")
+        .content(jsonOf(requestBody)))
+        .andExpect(status().isForbidden());
+
+    mockMvc.perform(get("/page/1"))
+        .andExpect(status().isNotFound());
+  }
+
+  @Test
   void testAddNewPage_withAdminToken_createsPage() throws Exception {
     Map<String, Object> requestBody = Map.of(
         "url", "https://example.com",
@@ -108,40 +209,56 @@ class PagesApplicationTests {
   }
 
   @Test
-  void testAddNewPage_withUserToken_gives403Error() throws Exception {
+  void testUpdatePage_withoutToken_gives401Error() throws Exception {
     Map<String, Object> requestBody = Map.of(
         "url", "https://example.com",
         "config", "{}");
 
-    String token = getTokenFromMockUser(mockUser.getEmail());
+    String adminToken = getTokenFromMockUser(mockAdminUser.getEmail());
 
-    mockMvc.perform(post("/page")
-        .header("Authorization", token)
-        .contentType("application/json")
-        .content(jsonOf(requestBody)))
-        .andExpect(status().isForbidden());
-
-    mockMvc.perform(get("/page/1"))
-        .andExpect(status().isNotFound());
-  }
-
-  @Test
-  void testAddNewPage_withoutToken_gives401Error() throws Exception {
-    Map<String, Object> requestBody = Map.of(
+    Map<String, Object> expectedResponse = Map.of(
+        "id", 1,
         "url", "https://example.com",
         "config", "{}");
 
     mockMvc.perform(post("/page")
+        .header("Authorization", adminToken)
         .contentType("application/json")
         .content(jsonOf(requestBody)))
+        .andExpect(status().isOk())
+        .andExpect(content().json(jsonOf(expectedResponse)));
+
+    Map<String, Object> updateRequestBody = Map.of(
+        "url", "https://example.com",
+        "config", "{\"title\": \"Example\"}");
+
+    mockMvc.perform(put("/page/1")
+        .contentType("application/json")
+        .content(jsonOf(updateRequestBody)))
         .andExpect(status().isUnauthorized());
 
     mockMvc.perform(get("/page/1"))
+        .andExpect(status().isOk())
+        .andExpect(content().json(jsonOf(expectedResponse)));
+  }
+
+  @Test
+  void testUpdatePage_notFound_gives404Error() throws Exception {
+    Map<String, Object> updateRequestBody = Map.of(
+        "url", "https://example.com",
+        "config", "{\"title\": \"Example\"}");
+
+    String adminToken = getTokenFromMockUser(mockAdminUser.getEmail());
+
+    mockMvc.perform(put("/page/1")
+        .header("Authorization", adminToken)
+        .contentType("application/json")
+        .content(jsonOf(updateRequestBody)))
         .andExpect(status().isNotFound());
   }
 
   @Test
-  void testUpdatePageById_withValidToken_updatesPage() throws Exception {
+  void testUpdatePage_withValidToken_updatesPage() throws Exception {
     Map<String, Object> requestBody = Map.of(
         "url", "https://example.com",
         "config", "{}");
@@ -182,37 +299,4 @@ class PagesApplicationTests {
         .andExpect(content().json(jsonOf(expectedUpdateResponse)));
   }
 
-  @Test
-  void testUpdatePage_withoutToken_gives401Error() throws Exception {
-    Map<String, Object> requestBody = Map.of(
-        "url", "https://example.com",
-        "config", "{}");
-
-    String adminToken = getTokenFromMockUser(mockAdminUser.getEmail());
-
-    Map<String, Object> expectedResponse = Map.of(
-        "id", 1,
-        "url", "https://example.com",
-        "config", "{}");
-
-    mockMvc.perform(post("/page")
-        .header("Authorization", adminToken)
-        .contentType("application/json")
-        .content(jsonOf(requestBody)))
-        .andExpect(status().isOk())
-        .andExpect(content().json(jsonOf(expectedResponse)));
-
-    Map<String, Object> updateRequestBody = Map.of(
-        "url", "https://example.com",
-        "config", "{\"title\": \"Example\"}");
-
-    mockMvc.perform(put("/page/1")
-        .contentType("application/json")
-        .content(jsonOf(updateRequestBody)))
-        .andExpect(status().isUnauthorized());
-
-    mockMvc.perform(get("/page/1"))
-        .andExpect(status().isOk())
-        .andExpect(content().json(jsonOf(expectedResponse)));
-  }
 }
