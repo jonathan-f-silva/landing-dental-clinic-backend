@@ -4,6 +4,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 
 import com.vaidedigital.pages.dtos.CreatePageDto;
+import com.vaidedigital.pages.dtos.UpdatePageDto;
 import com.vaidedigital.pages.entities.Page;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -29,5 +30,22 @@ public class PageServiceTest {
     assertEquals(page.getUrl(), result.getUrl());
     assertEquals(page.getConfig(), result.getConfig());
     assertNotNull(result.getId());
+  }
+
+  @Test
+  @DirtiesContext
+  public void testUpdatePageById() {
+    CreatePageDto newPage = new CreatePageDto("https://example.com", "{}");
+    Page page = pageService.addNewPage(newPage);
+
+    String newUrl = "https://example.com/new";
+    String newConfig = "{\"new\": true}";
+    UpdatePageDto updatedPage = new UpdatePageDto(newUrl, newConfig);
+
+    Page result = pageService.updatePageById(page.getId(), updatedPage);
+
+    assertEquals(updatedPage.url(), result.getUrl());
+    assertEquals(updatedPage.config(), result.getConfig());
+    assertEquals(page.getId(), result.getId());
   }
 }
