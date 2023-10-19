@@ -3,6 +3,7 @@ package com.vaidedigital.pages.controllers;
 import com.vaidedigital.pages.dtos.CreatePageDto;
 import com.vaidedigital.pages.dtos.UpdatePageDto;
 import com.vaidedigital.pages.entities.Page;
+import com.vaidedigital.pages.exceptions.NotFoundException;
 import com.vaidedigital.pages.services.PageService;
 import java.util.Optional;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -23,7 +24,6 @@ import org.springframework.web.server.ResponseStatusException;
 @RestController
 @RequestMapping("/page")
 public class PageController {
-
   @Autowired
   private PageService pageService;
 
@@ -58,7 +58,7 @@ public class PageController {
     if (page.isPresent()) {
       return pageService.updatePageById(id, updatedPage);
     } else {
-      throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Page with id " + id + " not found");
+      throw new NotFoundException("Page with id " + id + " not found");
     }
   }
 }
