@@ -57,7 +57,7 @@ class PagesApplicationTests {
         .content(requestBody))
         .andReturn();
 
-    return result.getResponse().getContentAsString();
+    return "Bearer " + result.getResponse().getContentAsString();
   }
 
   @BeforeEach

@@ -34,7 +34,7 @@ public class JwtTokenFilter extends OncePerRequestFilter {
       FilterChain filterChain)
       throws ServletException, IOException {
     String authHeader = request.getHeader(HttpHeaders.AUTHORIZATION);
-    if (authHeader != null) {
+    if (authHeader != null && authHeader.contains("Bearer ")) {
       String token = authHeader.replace("Bearer ", "");
       String subject = jwtDecoder.decode(token).getSubject();
       UserDetails userDetails = userService.loadUserByUsername(subject);
