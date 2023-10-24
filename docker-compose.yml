@@ -1,9 +1,10 @@
 services:
   db:
-    image: postgres:15-alpine
+    image: mysql:8.0.34
     environment:
-      POSTGRES_USER: postgres
-      POSTGRES_PASSWORD: 123456
-      POSTGRES_DB: pages_db
+      MYSQL_USER: vaidedigital
+      MYSQL_PASSWORD: 123456
+      MYSQL_DATABASE: vaidedigital_db
+      MYSQL_RANDOM_ROOT_PASSWORD: "yes"
     ports:
-      - 5432:5432
+      - 3306:3306

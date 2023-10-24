@@ -8,6 +8,9 @@ Authorization: Bearer eyJhbGciOiJSUzI1NiJ9.eyJpc3MiOiJ2YWlkZWRpZ2l0YWwtcGFnZXMiL
 GET {{root}}/user/user@jonat.inc
 Authorization: Basic jonat@jonat.inc:123456
 
+### Get user info without Auth
+GET {{root}}/user/user@jonat.inc
+
 ### Login admin with JWT
 POST {{root}}/login
 Content-Type: application/json
@@ -52,6 +55,13 @@ Content-Type: application/json
 ### Get page info
 GET {{root}}/page/1
 
+### Get page info not found
+GET {{root}}/page/1434443
+
+### Get page info not found (authenticated)
+GET {{root}}/page/1434443
+Authorization: Basic jonat@jonat.inc:123456
+
 ### Create page with wrong format
 POST {{root}}/page
 Content-Type: application/json
@@ -65,8 +75,7 @@ Authorization: Basic jonat@jonat.inc:123456
 ### Create page with correct format
 POST {{root}}/page
 Content-Type: application/json
-Authorization: Bearer eyJhbGciOiJSUzI1NiJ9.eyJpc3MiOiJ2YWlkZWRpZ2l0YWwtcGFnZXMiLCJzdWIiOiJqb25hdEBqb25hdC5pbmMiLCJleHAiOjE2OTc2Njg3NDYsImlhdCI6MTY5NzYzMjc0Niwic2NvcGUiOiJST0xFX0FETUlOIn0.wBOkZRzj8hXSTAxUm3NPj5EHN6BMLy7bOczBrOjw67q8v42JAzZdpkRRmLA7eKGhh0E9SZoNevcrJTRsGC53FzJSgmAc3i1zG3Fymg-6WIrz3D1ozxw5x6PPBRh2QMy4S2lmqhvfpV8NYVlLiANGsCsT8vFImYSPDgj68HZx4uNF8IdCM9gThAPqWSVaudnynYkf4l1rqmpbZ8xnbXEPfaCwsapd0WgRoJ24N5wl8SCTfOcFR7_6hLwNJRzeggVGG99LcMLqAlrCnW-Zlhx3CdCRIx2lNQH8kh0FFQV0sb4KzbxoY6iVmIAIlbpcZNHEQNl4rmBzvfbOkczorU_koQ
-# Authorization: Basic jonat@jonat.inc:123456
+Authorization: Basic jonat@jonat.inc:123456
 
 {
   "url": "www.oi.comw.yay",

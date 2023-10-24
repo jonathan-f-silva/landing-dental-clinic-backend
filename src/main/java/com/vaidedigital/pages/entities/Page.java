@@ -15,7 +15,7 @@ import jakarta.persistence.Table;
 @Table(name = "pages")
 public class Page {
   @Id
-  @GeneratedValue(strategy = GenerationType.AUTO)
+  @GeneratedValue(strategy = GenerationType.IDENTITY)
   private Integer id;
 
   @Column(unique = true, nullable = false)
