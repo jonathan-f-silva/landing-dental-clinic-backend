@@ -5,6 +5,7 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.vaidedigital.pages.entities.User;
@@ -51,13 +52,13 @@ class PagesApplicationTests {
     String requestBody = jsonOf(Map.of(
         "email", email,
         "password", "abc123"));
-
     MvcResult result = mockMvc.perform(post("/login")
         .contentType("application/json")
         .content(requestBody))
         .andReturn();
-
-    return "Bearer " + result.getResponse().getContentAsString();
+    String body = result.getResponse().getContentAsString();
+    String token = objectMapper.readTree(body).get("token").asText();
+    return "Bearer " + token;
   }
 
   @BeforeEach
@@ -79,7 +80,9 @@ class PagesApplicationTests {
     mockMvc.perform(post("/login")
         .contentType("application/json")
         .content(requestBody))
-        .andExpect(status().isOk());
+        .andExpect(status().isOk())
+        .andExpect(jsonPath("$.token").isString())
+        .andExpect(jsonPath("$.token").isNotEmpty());
   }
 
   @Test

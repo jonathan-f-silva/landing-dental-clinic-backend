@@ -2,6 +2,7 @@ package com.vaidedigital.pages.controllers;
 
 import com.vaidedigital.pages.dtos.CreateUserDto;
 import com.vaidedigital.pages.dtos.LoginDto;
+import com.vaidedigital.pages.dtos.LoginResponseDto;
 import com.vaidedigital.pages.entities.User;
 import com.vaidedigital.pages.security.AuthUtils;
 import com.vaidedigital.pages.services.UserService;
@@ -40,12 +41,13 @@ public class UserController {
    * @return a token
    */
   @PostMapping("/login")
-  public String login(@RequestBody LoginDto loginDto) {
+  public LoginResponseDto login(@RequestBody LoginDto loginDto) {
     Authentication auth = authenticationManager.authenticate(
         new UsernamePasswordAuthenticationToken(
             loginDto.email(),
             loginDto.password()));
-    return authUtils.getToken(auth);
+    String token = authUtils.getToken(auth);
+    return new LoginResponseDto(token);
   }
 
   /**
