@@ -22,8 +22,9 @@
       <pattern>${FILE_LOG_PATTERN}</pattern>
     </encoder>
     <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
-      <fileNamePattern>${LOG_FILE}.%d{yyyy-MM-dd}.log</fileNamePattern>
+      <fileNamePattern>${LOG_FILE}.%d{yyyy-MM-dd}.gz</fileNamePattern>
       <maxHistory>30</maxHistory>
+      <totalSizeCap>500MB</totalSizeCap>
     </rollingPolicy>
   </appender>
 
