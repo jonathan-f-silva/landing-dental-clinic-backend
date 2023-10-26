@@ -22,7 +22,7 @@ import org.springframework.web.server.ResponseStatusException;
  * Controller for the pages API.
  */
 @RestController
-@RequestMapping("/page")
+@RequestMapping("/api/page")
 public class PageController {
   @Autowired
   private PageService pageService;

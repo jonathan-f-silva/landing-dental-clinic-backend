@@ -52,7 +52,7 @@ class PagesApplicationTests {
     String requestBody = jsonOf(Map.of(
         "email", email,
         "password", "abc123"));
-    MvcResult result = mockMvc.perform(post("/login")
+    MvcResult result = mockMvc.perform(post("/api/user/login")
         .contentType("application/json")
         .content(requestBody))
         .andReturn();
@@ -77,7 +77,7 @@ class PagesApplicationTests {
         "email", mockAdminUser.getEmail(),
         "password", "abc123"));
 
-    mockMvc.perform(post("/login")
+    mockMvc.perform(post("/api/user/login")
         .contentType("application/json")
         .content(requestBody))
         .andExpect(status().isOk())
@@ -91,7 +91,7 @@ class PagesApplicationTests {
         "email", "unknown@user.com",
         "password", "123456"));
 
-    mockMvc.perform(post("/login")
+    mockMvc.perform(post("/api/user/login")
         .contentType("application/json")
         .content(requestBody))
         .andExpect(status().isUnauthorized());
@@ -103,7 +103,7 @@ class PagesApplicationTests {
         "email", mockAdminUser.getEmail(),
         "password", "123456"));
 
-    mockMvc.perform(post("/login")
+    mockMvc.perform(post("/api/user/login")
         .contentType("application/json")
         .content(requestBody))
         .andExpect(status().isUnauthorized());
@@ -115,7 +115,7 @@ class PagesApplicationTests {
         "name", "New User",
         "email", "new.user@users.com"));
 
-    mockMvc.perform(post("/register")
+    mockMvc.perform(post("/api/user/register")
         .contentType("application/json")
         .content(requestBody))
         .andExpect(status().isUnauthorized());
@@ -130,7 +130,7 @@ class PagesApplicationTests {
         "email", "new.user@users.com",
         "password", "abc123"));
 
-    mockMvc.perform(post("/register")
+    mockMvc.perform(post("/api/user/register")
         .header("Authorization", token)
         .contentType("application/json")
         .content(requestBody))
@@ -146,7 +146,7 @@ class PagesApplicationTests {
         "email", "new.user@users.com",
         "password", "abc123"));
 
-    mockMvc.perform(post("/register")
+    mockMvc.perform(post("/api/user/register")
         .header("Authorization", token)
         .contentType("application/json")
         .content(requestBody))
@@ -159,12 +159,12 @@ class PagesApplicationTests {
         "url", "https://example.com",
         "config", "{}");
 
-    mockMvc.perform(post("/page")
+    mockMvc.perform(post("/api/page")
         .contentType("application/json")
         .content(jsonOf(requestBody)))
         .andExpect(status().isUnauthorized());
 
-    mockMvc.perform(get("/page/1"))
+    mockMvc.perform(get("/api/page/1"))
         .andExpect(status().isNotFound());
   }
 
@@ -176,13 +176,13 @@ class PagesApplicationTests {
 
     String token = getTokenFromMockUser(mockUser.getEmail());
 
-    mockMvc.perform(post("/page")
+    mockMvc.perform(post("/api/page")
         .header("Authorization", token)
         .contentType("application/json")
         .content(jsonOf(requestBody)))
         .andExpect(status().isForbidden());
 
-    mockMvc.perform(get("/page/1"))
+    mockMvc.perform(get("/api/page/1"))
         .andExpect(status().isNotFound());
   }
 
@@ -199,14 +199,14 @@ class PagesApplicationTests {
         "url", "https://example.com",
         "config", "{}");
 
-    mockMvc.perform(post("/page")
+    mockMvc.perform(post("/api/page")
         .header("Authorization", token)
         .contentType("application/json")
         .content(jsonOf(requestBody)))
         .andExpect(status().isOk())
         .andExpect(content().json(jsonOf(expectedResponse)));
 
-    mockMvc.perform(get("/page/1"))
+    mockMvc.perform(get("/api/page/1"))
         .andExpect(status().isOk())
         .andExpect(content().json(jsonOf(expectedResponse)));
   }
@@ -224,7 +224,7 @@ class PagesApplicationTests {
         "url", "https://example.com",
         "config", "{}");
 
-    mockMvc.perform(post("/page")
+    mockMvc.perform(post("/api/page")
         .header("Authorization", adminToken)
         .contentType("application/json")
         .content(jsonOf(requestBody)))
@@ -235,12 +235,12 @@ class PagesApplicationTests {
         "url", "https://example.com",
         "config", "{\"title\": \"Example\"}");
 
-    mockMvc.perform(put("/page/1")
+    mockMvc.perform(put("/api/page/1")
         .contentType("application/json")
         .content(jsonOf(updateRequestBody)))
         .andExpect(status().isUnauthorized());
 
-    mockMvc.perform(get("/page/1"))
+    mockMvc.perform(get("/api/page/1"))
         .andExpect(status().isOk())
         .andExpect(content().json(jsonOf(expectedResponse)));
   }
@@ -253,7 +253,7 @@ class PagesApplicationTests {
 
     String adminToken = getTokenFromMockUser(mockAdminUser.getEmail());
 
-    mockMvc.perform(put("/page/1")
+    mockMvc.perform(put("/api/page/1")
         .header("Authorization", adminToken)
         .contentType("application/json")
         .content(jsonOf(updateRequestBody)))
@@ -274,7 +274,7 @@ class PagesApplicationTests {
         "url", "https://example.com",
         "config", "{}");
 
-    mockMvc.perform(post("/page")
+    mockMvc.perform(post("/api/page")
         .header("Authorization", adminToken)
         .contentType("application/json")
         .content(jsonOf(requestBody)))
@@ -290,14 +290,14 @@ class PagesApplicationTests {
         "url", "https://example.com",
         "config", "{\"title\": \"Example\"}");
 
-    mockMvc.perform(put("/page/1")
+    mockMvc.perform(put("/api/page/1")
         .header("Authorization", userToken)
         .contentType("application/json")
         .content(jsonOf(updateRequestBody)))
         .andExpect(status().isOk())
         .andExpect(content().json(jsonOf(expectedUpdateResponse)));
 
-    mockMvc.perform(get("/page/1"))
+    mockMvc.perform(get("/api/page/1"))
         .andExpect(status().isOk())
         .andExpect(content().json(jsonOf(expectedUpdateResponse)));
   }

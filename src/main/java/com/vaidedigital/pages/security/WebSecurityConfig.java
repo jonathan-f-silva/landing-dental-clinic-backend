@@ -53,8 +53,8 @@ public class WebSecurityConfig {
         .sessionManagement(session -> session
             .sessionCreationPolicy(SessionCreationPolicy.STATELESS))
         .authorizeHttpRequests(auth -> auth
-            .requestMatchers(HttpMethod.POST, "/login").permitAll()
-            .requestMatchers(HttpMethod.GET, "/page/*").permitAll()
+            .requestMatchers(HttpMethod.POST, "/api/user/login").permitAll()
+            .requestMatchers(HttpMethod.GET, "/api/page/*").permitAll()
             .anyRequest().authenticated())
         .exceptionHandling((exceptions) -> exceptions
             .authenticationEntryPoint(new BearerTokenAuthenticationEntryPoint())

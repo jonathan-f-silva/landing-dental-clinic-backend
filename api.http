@@ -1,4 +1,4 @@
-@root = http://localhost:8080
+@root = http://localhost:8080/api
 
 ### Get user info with JWT
 GET {{root}}/user/user@jonat.inc
@@ -12,7 +12,7 @@ Authorization: Basic jonat@jonat.inc:123456
 GET {{root}}/user/user@jonat.inc
 
 ### Login admin with JWT
-POST {{root}}/login
+POST {{root}}/user/login
 Content-Type: application/json
 
 {
@@ -21,7 +21,7 @@ Content-Type: application/json
 }
 
 ### Login user with JWT
-POST {{root}}/login
+POST {{root}}/user/login
 Content-Type: application/json
 
 {
@@ -30,7 +30,7 @@ Content-Type: application/json
 }
 
 ### Register user with Basic Auth (user)
-POST {{root}}/register
+POST {{root}}/user/register
 Authorization: Basic user@jonat.inc:123456q
 Content-Type: application/json
 
@@ -41,7 +41,7 @@ Content-Type: application/json
 }
 
 ### Register user with Basic Auth (admin)
-POST {{root}}/register
+POST {{root}}/user/register
 Authorization: Basic jonat@jonat.inc:123456
 Content-Type: application/json
 
