@@ -1,3 +1,26 @@
 jwt:
   private.key: classpath:app.key
   public.key: classpath:app.pub
+
+bucket4j:
+  enabled: true
+  filters:
+    - cache-name: buckets
+      url: /api/.*
+      rate-limits:
+        - bandwidths:
+            - capacity: 15
+              time: 1
+              unit: minutes
+            - capacity: 5
+              time: 20
+              unit: seconds
+      strategy: first
+      http-response-body: '{ "status": 429, "error": "Too Many Requests", "message": "Try again later." }'
+
+spring:
+  cache:
+    cache-names:
+      - buckets
+    caffeine:
+      spec: maximumSize=100000,expireAfterAccess=3600s

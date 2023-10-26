@@ -2,6 +2,7 @@ package com.vaidedigital.pages.security;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.cache.annotation.EnableCaching;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpMethod;
@@ -20,6 +21,7 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
  * Spring Security configuration.
  */
 @Configuration
+@EnableCaching
 @EnableWebSecurity
 @EnableMethodSecurity
 public class WebSecurityConfig {
